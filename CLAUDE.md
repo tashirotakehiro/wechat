@@ -20,4 +20,4 @@ Claude CodeがMCPサーバー経由でWeChatのメッセージ取得・送信を
 
 - WeChat操作中はWeChatウィンドウに手動で触れないこと（GUI自動操作のため）
 - Python 3.12 + wxauto4 を使用（3.13では wxauto4 が未対応）
-- WeChat 4.0.5 が必要（それ以外のバージョンでは動作しない可能性あり）
+- WeChat 4.x に対応（server.py がウィンドウ名「微信」/「WeChat」を自動検出）
