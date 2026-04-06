@@ -3,14 +3,6 @@
     "wechat": {
       "type": "sse",
       "url": "http://localhost:3000/sse"
-    },
-    "slack": {
-      "command": "npx",
-      "args": ["-y", "@modelcontextprotocol/server-slack"],
-      "env": {
-        "SLACK_BOT_TOKEN": "<xoxb-から始まるBot Tokenをここに入力>",
-        "SLACK_TEAM_ID": "<Tから始まるTeam IDをここに入力>"
-      }
     }
   }
 }
