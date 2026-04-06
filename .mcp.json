@@ -2,8 +2,7 @@
   "mcpServers": {
     "wechat": {
       "command": "py",
-      "args": ["-3.12", "server.py"],
-      "cwd": "."
+      "args": ["-3.12", "server.py"]
     }
   }
 }
