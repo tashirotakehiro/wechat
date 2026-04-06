@@ -1,10 +1,21 @@
 """WeChat MCP Server - wxauto4ベースのWeChat 4.x対応MCPサーバー"""
 
+import sys
+import os
 from fastmcp import FastMCP
 from wxauto4 import WeChat
 
 mcp = FastMCP("wechat")
-wx = WeChat(ads=False)
+
+# wxauto4の初期化時にstdoutへ出力されるメッセージを抑制する
+# （MCP stdioトランスポートと競合するため）
+_original_stdout = sys.stdout
+sys.stdout = open(os.devnull, "w")
+try:
+    wx = WeChat(ads=False)
+finally:
+    sys.stdout.close()
+    sys.stdout = _original_stdout
 
 
 @mcp.tool()
