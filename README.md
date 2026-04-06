@@ -5,63 +5,69 @@ WeChatに届くメッセージをClaude Codeが日本語に翻訳してSlackに�
 ## 前提条件
 
 - Windows PC（WeChatとClaude Codeが同一マシン上で動作）
-- WeChat for Windows インストール済み・ログイン済み
-- Python >= 3.11
+- WeChat for Windows 4.x インストール済み・ログイン済み
+- Python 3.12（wxauto4が3.13未対応のため）
 - Claude Code インストール済み
-- Slack MCP が既に接続済みであること
+- Slack MCP 接続済み
 
 ## セットアップ手順
 
-### 1. mcp_server_wechat のインストール
-
-Windows のターミナル（PowerShell / CMD）で実行:
+### 1. 依存パッケージのインストール
 
 ```powershell
-pip install mcp_server_wechat
+py -3.12 -m pip install wxauto4 fastmcp
 ```
 
-### 2. ファイル保存用フォルダの作成
-
-```powershell
-mkdir C:\wechat_files
-```
-
-### 3. WeChat にログイン
+### 2. WeChat にログイン
 
 WeChat for Windows を起動し、ログイン状態であることを確認。
 
-### 4. SSEサーバーの起動
+### 3. 動作確認
+
+WeChat が起動した状態で：
 
 ```powershell
-python -m mcp_server_wechat_sse --folder-path=C:\wechat_files
+py -3.12 -c "from wxauto4 import WeChat; print('OK')"
 ```
 
-`http://localhost:3000/sse` で起動すれば成功。このターミナルは閉じないこと。
+`OK` と表示されれば準備完了。
 
-> **注意**: サーバー稼働中はWeChatウィンドウを手動で操作しないでください（GUI自動操作が干渉します）。
+### 4. MCP サーバーの起動確認
 
-### 5. 動作確認
+Claude Code を再起動すると `.mcp.json` が読み込まれ、自動的に `server.py` が起動されます。
+`/mcp` コマンドで `wechat` サーバーが認識されているか確認してください。
 
-1. Claude Code を再起動（またはセッション再開）
-2. `/mcp` コマンドで `wechat` サーバーが認識されているか確認
-3. テスト: 「WeChatの〇〇さんの今日のチャット履歴を取得して」
+### 5. テスト
+
+Claude に以下を試してください：
+- 「WeChatの〇〇さんのメッセージを取得して」
+- 「WeChatで〇〇さんに你好と送って」
 
 ### 6. 自動ポーリング開始
-
-Claude Code で以下を実行:
 
 ```
 /loop 5m WeChat新着メッセージをチェックし、日本語に翻訳してSlackの対応チャンネルに投稿。Slackの wechat-* チャンネルの新着返信を中国語に翻訳してWeChatで返信。
 ```
 
-## 構成
+## ファイル構成
 
-- `.mcp.json` — WeChat MCPサーバー設定（SSE接続）
-- `CLAUDE.md` — Claudeへのブリッジ動作指示（翻訳ルール、チャンネル命名規則等）
-- Slack — 既存のSlack MCPサーバー経由で操作
+| ファイル | 説明 |
+|---------|------|
+| `server.py` | wxauto4ベースのWeChat MCPサーバー |
+| `requirements.txt` | Python依存パッケージ |
+| `.mcp.json` | Claude Code MCP設定 |
+| `CLAUDE.md` | Claudeへのブリッジ動作指示 |
+
+## 利用可能なツール
+
+| ツール | 説明 |
+|-------|------|
+| `get_messages` | 指定連絡先のチャットを開き、表示中のメッセージを取得 |
+| `send_message` | 指定連絡先にテキストメッセージを送信 |
+| `send_file` | 指定連絡先にファイルを送信 |
 
 ## トラブルシューティング
 
-- **WeChat MCP接続エラー**: `python -m mcp_server_wechat_sse` が起動しているか確認
-- **翻訳精度**: Claudeに追加の翻訳指示を与えることで調整可能
-- **WeChatウィンドウ干渉**: サーバー動作中はWeChatウィンドウを手動操作しない
+- **wxauto4 インストール失敗**: Python 3.12を使用しているか確認（`py -3.12 --version`）
+- **WeChat認識エラー**: WeChatが起動・ログイン済みか確認
+- **GUI干渉**: サーバー動作中はWeChatウィンドウを手動操作しない
