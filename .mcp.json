@@ -1,8 +1,9 @@
 {
   "mcpServers": {
     "wechat": {
-      "type": "sse",
-      "url": "http://localhost:3000/sse"
+      "command": "py",
+      "args": ["-3.12", "server.py"],
+      "cwd": "."
     }
   }
 }
