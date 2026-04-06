@@ -3,6 +3,14 @@
     "wechat": {
       "command": "py",
       "args": ["-3.12", "server.py"]
+    },
+    "slack": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-slack"],
+      "env": {
+        "SLACK_BOT_TOKEN": "xoxb-785308803664-10844749564307-FdVDgJ7gkh1O0EYE8mkHb0KZ",
+        "SLACK_TEAM_ID": "TP392PMKJ"
+      }
     }
   }
 }
