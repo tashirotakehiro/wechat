@@ -104,7 +104,15 @@ from fastmcp import FastMCP
 from wxauto4 import WeChat
 
 mcp = FastMCP("wechat")
-wx = WeChat(ads=False)
+_wx = None
+
+
+def _get_wx() -> WeChat:
+    """WeChat インスタンスを遅延初期化して返す。"""
+    global _wx
+    if _wx is None:
+        _wx = WeChat(ads=False)
+    return _wx
 
 # WeChat セッション一覧の control.Name 末尾に付く時刻表示を除去するパターン
 _TIME_RE = re.compile(
@@ -121,7 +129,7 @@ _TIME_RE = re.compile(
 
 def _get_sessions_with_display():
     """セッション一覧を (表示テキスト, SessionElement) のペアで返す。"""
-    sessions = wx.GetSession()
+    sessions = _get_wx().GetSession()
     result = []
     for s in sessions:
         full = (s.control.Name or "").rstrip()
@@ -155,7 +163,7 @@ def _open_chat(contact: str) -> str:
             return display
 
     # セッション一覧に見つからない場合は WeChat 検索にフォールバック
-    wx.ChatWith(contact)
+    _get_wx().ChatWith(contact)
     return contact
 
 
@@ -180,7 +188,7 @@ def get_messages(contact: str) -> str:
         contact: 連絡先の名前（部分一致・あいまい入力OK）
     """
     resolved = _open_chat(contact)
-    messages = wx.GetAllMessage()
+    messages = _get_wx().GetAllMessage()
     if not messages:
         return f"{resolved} のメッセージはありません"
     result = []
@@ -200,7 +208,7 @@ def send_message(contact: str, message: str) -> str:
         message: 送信するメッセージ内容
     """
     resolved = _open_chat(contact)
-    wx.SendMsg(message)
+    _get_wx().SendMsg(message)
     return f"{resolved} にメッセージを送信しました: {message}"
 
 
@@ -213,7 +221,7 @@ def send_file(contact: str, filepath: str) -> str:
         filepath: 送信するファイルのパス
     """
     resolved = _open_chat(contact)
-    wx.SendFiles(filepath)
+    _get_wx().SendFiles(filepath)
     return f"{resolved} にファイルを送信しました: {filepath}"
 
 
